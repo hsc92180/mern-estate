@@ -1,6 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import userRoutes from "./routes/user.route.js";
+import authRoutes from "./routes/auth.route.js";
 
 dotenv.config();
 
@@ -12,6 +14,17 @@ mongoose.connect(process.env.MONGO).then(() => {
 
 const app = express();
 
+// allow json data to be sent
+app.use(express.json());
+
 app.listen(8080, () => {
     console.log("Server is running on port 8080");
 })
+
+// app.get("/test", (req, res) => {
+//     // res.send("Hello World");
+//     res.json({ message: "Hello World" });
+// })
+
+app.use("/api/user", userRoutes);
+app.use("/api/auth", authRoutes);
