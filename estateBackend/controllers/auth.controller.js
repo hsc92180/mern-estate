@@ -31,7 +31,7 @@ export const signin = async (req, res, next) => {
     if (!validUser) {
       return next(errorHandler(401, "Invalid credentials"));
     }
-    const vaidPassword = await bcryptjs.compareSync(
+    const vaidPassword = bcryptjs.compareSync(
       password,
       validUser.password
     );
