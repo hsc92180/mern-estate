@@ -51,3 +51,42 @@ export const signin = async (req, res, next) => {
     next(error);
   }
 };
+
+export const googleSignin = async (req, res, next) => {
+  console.log("Google Signin request received");
+  const { email, photo } = req.body;
+  try {
+    const validUser = await User.findOne({ email });
+    if (validUser) {
+      const token = jwt.sign({ _id: validUser._id }, process.env.JWT_SECRET, {
+        expiresIn: "1d",
+      });
+      const { password: pass, ...rest } = validUser._doc;
+      res
+        .cookie("access_token", token, { httpOnly: true })
+        .status(200)
+        .json(rest);
+    } else {
+      const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+      const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+      const newUser = new User({
+        username: email.split("@")[0],
+        email,
+        password: hashedPassword,
+        avatar: photo,
+      });
+      await newUser.save();
+      const token = jwt.sign({ _id: newUser._id }, process.env.JWT_SECRET, {
+        expiresIn: "1d",
+      });
+      const { password: pass, ...rest } = newUser._doc;
+      res
+        .cookie("access_token", token, { httpOnly: true })
+        .status(200)
+        .json(rest);
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  } 
+};
