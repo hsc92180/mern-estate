@@ -31,14 +31,11 @@ export const signin = async (req, res, next) => {
     if (!validUser) {
       return next(errorHandler(401, "Invalid credentials"));
     }
-    const vaidPassword = bcryptjs.compareSync(
-      password,
-      validUser.password
-    );
+    const vaidPassword = bcryptjs.compareSync(password, validUser.password);
     if (!vaidPassword) {
       return next(errorHandler(401, "Invalid credentials"));
     }
-    const token = jwt.sign({ id: validUser.id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ _id: validUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
     const { password: pass, ...rest } = validUser._doc;
@@ -67,7 +64,9 @@ export const googleSignin = async (req, res, next) => {
         .status(200)
         .json(rest);
     } else {
-      const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
       const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
       const newUser = new User({
         username: email.split("@")[0],
@@ -88,5 +87,16 @@ export const googleSignin = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     next(error);
-  } 
+  }
+};
+
+export const signout = async (req, res) => {
+  console.log("Signout request received");
+  try {
+    console.log("User signed out successfully");
+    res.clearCookie("access_token").status(200).json({ message: "User signed out successfully" });
+  } catch (error) {
+    console.log("Error signing out: ", error.message);
+    next(error);
+  }
 };

@@ -10,9 +10,10 @@ export const test = (req, res) => {
 
 export const updateUser = async (req, res, next) => {
   console.log("Update user request received");
-  console.log("req.user.id:", req.user.id);
-  console.log("req.params.id:", req.params.id);
-  if (req.user.id !== req.params.id) {
+  // console.log("req.user._id:", req.user._id);
+  // console.log("req.params.id:", req.params.id);
+  if (req.user._id !== req.params.id) {
+    console.log("You can update only your account");
     return next(errorHandler(403, "You can update only your account"));
   }
 
@@ -39,6 +40,22 @@ export const updateUser = async (req, res, next) => {
     res.status(200).json(rest);
   } catch (error) {
     console.log("User update failed", error.message);
+    next(error);
+  }
+};
+
+export const deleteUser = async (req, res, next) => {
+  console.log("User delete request received");
+  if (req.user._id !== req.params.id) {
+    console.log("You can delete only your account");
+    return next(errorHandler(403, "You can delete only your account"));
+  }
+
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.clearCookie("access_token").status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.log("User delete failed", error.message);
     next(error);
   }
 };
