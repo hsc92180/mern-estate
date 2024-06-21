@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ const app = express();
 
 // allow json data to be sent
 app.use(express.json());
+
+app.use(cookieParser());
 
 app.listen(8080, () => {
     console.log("Server is running on port 8080");
