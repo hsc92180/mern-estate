@@ -1,6 +1,7 @@
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
 import User from "../models/user.model.js";
+import Listing from "../models/listing.model.js";
 
 export const test = (req, res) => {
   res.json({
@@ -56,6 +57,21 @@ export const deleteUser = async (req, res, next) => {
     res.clearCookie("access_token").status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     console.log("User delete failed", error.message);
+    next(error);
+  }
+};
+
+export const getUserListings = async (req, res, next) => {
+  console.log("getUserListings request received");
+  if(req.user._id !== req.params.id) {
+    console.log("You can get only your listings");
+    return next(errorHandler(403, "You can get only your listings"));
+  }
+  try {
+    const listing = await Listing.find({userRef: req.params.id});
+    res.status(200).json(listing);    
+  } catch (error) {
+    console.log("Error getting listings: ", error.message);
     next(error);
   }
 };
