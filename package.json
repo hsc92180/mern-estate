@@ -5,9 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon estateBackend/index.js",
-    "start": "node estateBackend/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon estate-api/index.js",
+    "start": "node estate-api/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm install && npm install --prefix estate-ui && npm run build --prefix estate-ui"
   },
   "keywords": [
     "Fullstack",
