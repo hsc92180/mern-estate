@@ -125,7 +125,7 @@ export default function Home() {
                 className="text-sm text-blue-800 font-semibold hover:underline"
                 to={"/search?type=rent"}
               >
-                Show more offers
+                Show more places for rent
               </Link>
             </div>
             <div className="flex flex-wrap gap-4 justify-center">
@@ -146,7 +146,7 @@ export default function Home() {
                 className="text-sm text-blue-800 font-semibold hover:underline"
                 to={"/search?type=sale"}
               >
-                Show more offers
+                Show more places for sale
               </Link>
             </div>
             <div className="flex flex-wrap gap-4 justify-center">
